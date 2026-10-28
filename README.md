@@ -13,18 +13,27 @@
 
 ## 安装
 
-先装好 rime-ice 或 rime-frost，再用 [东风破 plum](https://github.com/rime/plum) 安装：
+使用 [东风破 plum](https://github.com/rime/plum) 安装。plum 不会自动安装依赖，需要先装好 rime-frost 或 rime-ice（已经装过的可以跳过这一步）。`rime-install` 可以一次接多个目标，按顺序安装：
 
 ```sh
-# 只装白霜版
-bash rime-install <user>/rime-jdaux:frost
-# 只装雾凇版
-bash rime-install <user>/rime-jdaux:ice
-# 两个都装
-bash rime-install <user>/rime-jdaux
+# 白霜版：先装 rime-frost，再装本包
+bash rime-install gaboolic/rime-frost:others/recipes/full JunYang-tes/rime-jdaux:frost
+
+# 雾凇版：先装 rime-ice，再装本包
+bash rime-install iDvel/rime-ice:others/recipes/full JunYang-tes/rime-jdaux:ice
+```
+
+已经装好白霜 / 雾凇时，只装本包：
+
+```sh
+bash rime-install JunYang-tes/rime-jdaux:frost   # 只装白霜版
+bash rime-install JunYang-tes/rime-jdaux:ice     # 只装雾凇版
+bash rime-install JunYang-tes/rime-jdaux         # 两个都装
 ```
 
 配方会把新方案追加到 `default.custom.yaml` 的 `schema_list`（使用 `schema_list/@next`，保留原有列表）。装好后重新部署即可。
+
+> 雾凇和白霜有不少同名文件（`default.yaml`、`lua/*.lua`、`melt_eng.*`、`radical_pinyin.*` 等），装进同一个用户目录时，后装的会覆盖先装的。
 
 > 注意：雾凇的 `others/recipes/config` 等配方用 `patch/+: schema_list:` 写入方案列表，会**整体替换** `schema_list`。如果在本包之后又运行了这类配方，请重新运行本包的配方。
 
