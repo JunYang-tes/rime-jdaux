@@ -1,0 +1,15 @@
+# Rime schema
+# encoding: utf-8
+#
+# 仅用于让部署器编译 jdaux.dict.yaml，供 *_jd 方案的单字辅码翻译器挂载。
+
+schema:
+  schema_id: jdaux
+  name: JD单字辅码
+  version: "1"
+
+translator:
+  dictionary: jdaux
+  enable_sentence: false
+  enable_completion: false
+  enable_user_dict: false

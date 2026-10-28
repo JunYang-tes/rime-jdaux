@@ -1,0 +1,50 @@
+# Rime schema
+# encoding: utf-8
+#
+# 雾凇自然码双拼（JD 辅码）
+#
+# 不复制原方案：整体引入 double_pinyin.schema.yaml（雾凇自然码双拼），只改辅码相关部分。
+#   - 加入单字辅码翻译器 jdaux_char（挂 JD 码表 jdaux.dict.yaml）
+#   - 加入 jdaux_processor（句中辅码按键）与 jdaux_filter（候选筛选）
+#   - 在本方案内停用雾凇自带的部件拆字辅码 search.lua（原方案不受影响）
+# 原方案的 double_pinyin.custom.yaml 不会作用于本方案，
+# 如需定制请写 rime_ice_double_pinyin_jd.custom.yaml。
+
+__include: double_pinyin.schema:/
+
+schema:
+  schema_id: rime_ice_double_pinyin_jd
+  name: 雾凇自然码双拼（JD辅码）
+  version: "1"
+  author:
+    - Dvel
+  description: |
+    雾凇拼音 - 自然码双拼（JD 辅码版）
+    基于 double_pinyin，辅码换成 JD 辅码。
+  dependencies:
+    - melt_eng        # 英文输入，作为次翻译器挂载到拼音方案
+    - radical_pinyin  # 部件拆字，反查
+    - jdaux           # JD 单字辅码码表
+
+jdaux_char:
+  dictionary: jdaux
+  enable_sentence: false
+  enable_completion: false
+  enable_user_dict: false
+  initial_quality: 1000
+  spelling_hints: 0
+
+jdaux:
+  trigger_key: "`"
+  mid_enabled: true
+
+__patch:
+  # 独立的 prism，避免与原方案共用时每次部署互相覆盖重建
+  - translator/prism: rime_ice_double_pinyin_jd
+  # 雾凇原生的部件拆字辅码也以 ` 引导，换成一个不会被输入的字符让它原样透传
+  - key_binder/search: "〓"
+  # 须排在 speller 之前
+  - engine/processors/@before 0: lua_processor@*jdaux_processor
+  # 单字辅码：shi`oo -> 实（排在 punct_translator 之后）
+  - engine/translators/@after 0: table_translator@jdaux_char
+  - engine/filters/@before 0: lua_filter@*jdaux_filter

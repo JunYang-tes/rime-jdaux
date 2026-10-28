@@ -1,0 +1,26 @@
+# encoding: utf-8
+---
+recipe:
+  Rx: jdaux
+  description: >-
+    同时安装 rime_frost_double_pinyin_jd 与 rime_ice_double_pinyin_jd。
+    只装其中一个请用 :frost 或 :ice 配方。
+
+install_files:
+  - jdaux.schema.yaml
+  - jdaux.dict.yaml
+  - lua/jdaux_state.lua
+  - lua/jdaux_processor.lua
+  - lua/jdaux_filter.lua
+  - lua/jdaux/jd_aux_code.txt
+  - rime_frost_double_pinyin_jd.schema.yaml
+  - rime_ice_double_pinyin_jd.schema.yaml
+
+patch_files:
+  default.custom.yaml:
+    - patch/+:
+        "schema_list/@next":
+          schema: rime_frost_double_pinyin_jd
+    - patch/+:
+        "schema_list/@after last":
+          schema: rime_ice_double_pinyin_jd

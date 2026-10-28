@@ -1,0 +1,43 @@
+# Rime schema
+# encoding: utf-8
+#
+# 白霜自然码双拼（JD 辅码）
+#
+# 不复制原方案：整体引入 rime_frost_double_pinyin.schema.yaml，只改辅码相关部分。
+#   - 单字辅码翻译器 frost_aux 改挂 JD 码表 jdaux.dict.yaml
+#   - 加入 jdaux_processor（句中辅码按键）与 jdaux_filter（候选筛选）
+#   - 在本方案内停用白霜自带的墨奇辅码滤镜（原方案不受影响）
+# 原方案的 rime_frost_double_pinyin.custom.yaml 不会作用于本方案，
+# 如需定制请写 rime_frost_double_pinyin_jd.custom.yaml。
+
+__include: rime_frost_double_pinyin.schema:/
+
+schema:
+  schema_id: rime_frost_double_pinyin_jd
+  name: 白霜自然码双拼（JD辅码）
+  version: "1"
+  author:
+    - Dvel
+    - gaboolic
+  description: |
+    白霜拼音 - 自然码双拼（JD 辅码版）
+    基于 rime_frost_double_pinyin，辅码换成 JD 辅码。
+  dependencies:
+    - melt_eng        # 英文输入，作为次翻译器挂载到拼音方案
+    - radical_pinyin  # 部件拆字，反查及辅码
+    - jdaux           # JD 单字辅码码表
+
+jdaux:
+  trigger_key: "`"
+  mid_enabled: true
+
+__patch:
+  # 独立的 prism，避免与原方案共用时每次部署互相覆盖重建
+  - translator/prism: rime_frost_double_pinyin_jd
+  # 单字辅码：shi`oo -> 实
+  - frost_aux/dictionary: jdaux
+  # 白霜原生的墨奇辅码滤镜也以 ` 引导，换成一个不会被输入的字符让它原样透传
+  - frost_aux_filter/trigger_key: "〓"
+  # 须排在 speller 之前
+  - engine/processors/@before 0: lua_processor@*jdaux_processor
+  - engine/filters/@before 0: lua_filter@*jdaux_filter

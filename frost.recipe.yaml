@@ -1,0 +1,22 @@
+# encoding: utf-8
+---
+recipe:
+  Rx: frost
+  description: >-
+    白霜自然码双拼（JD辅码）rime_frost_double_pinyin_jd。
+    需已安装 rime-frost；不修改白霜原有方案。
+
+install_files:
+  - jdaux.schema.yaml
+  - jdaux.dict.yaml
+  - lua/jdaux_state.lua
+  - lua/jdaux_processor.lua
+  - lua/jdaux_filter.lua
+  - lua/jdaux/jd_aux_code.txt
+  - rime_frost_double_pinyin_jd.schema.yaml
+
+patch_files:
+  default.custom.yaml:
+    - patch/+:
+        "schema_list/@next":
+          schema: rime_frost_double_pinyin_jd
